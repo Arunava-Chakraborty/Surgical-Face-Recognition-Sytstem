@@ -1,0 +1,42 @@
+import os
+import cv2
+import numpy as np
+import pandas as pd
+
+# Set Kaggle-specific paths
+input_folder = "/kaggle/input/faceimages/plastic face/silikon-16"  # Change this to your Kaggle dataset directory
+before_folder = os.path.join(input_folder, "before")
+after_folder = os.path.join(input_folder, "after")
+
+# Output CSV file paths (Kaggle working directory)
+eyelid_before_csv = "/kaggle/working/before_images.csv"
+eyelid_after_csv = "/kaggle/working/after_images.csv"
+
+# Function to process a folder of images and save pixel values to a CSV file
+def process_images_to_csv(image_folder, output_csv):
+    data = []  # List to store flattened pixel data
+    image_names = []  # List to store image file names
+    
+    # Iterate through all images in the folder
+    for filename in os.listdir(image_folder):
+        file_path = os.path.join(image_folder, filename)
+        if os.path.isfile(file_path) and filename.endswith(('.png', '.jpg', '.jpeg')):
+            # Read the image
+            image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)  # Convert to grayscale
+            if image is not None:
+                # Flatten the image into a 1D array
+                flattened = image.flatten()
+                data.append(flattened)
+                image_names.append(filename)
+    
+    # Convert to a DataFrame
+    df = pd.DataFrame(data)
+    df.insert(0, "Image_Name", image_names)  # Add a column for image names
+    
+    # Save to CSV
+    df.to_csv(output_csv, index=False)
+    print(f"Saved CSV to {output_csv}")
+
+# Process both folders
+process_images_to_csv(before_folder, eyelid_before_csv)
+process_images_to_csv(after_folder, eyelid_after_csv)
