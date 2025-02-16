@@ -1,0 +1,966 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "f276d9ed",
+   "metadata": {
+    "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
+    "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:46:46.128139Z",
+     "iopub.status.busy": "2025-02-16T13:46:46.127876Z",
+     "iopub.status.idle": "2025-02-16T13:46:46.821562Z",
+     "shell.execute_reply": "2025-02-16T13:46:46.820452Z"
+    },
+    "papermill": {
+     "duration": 0.699402,
+     "end_time": "2025-02-16T13:46:46.823185",
+     "exception": false,
+     "start_time": "2025-02-16T13:46:46.123783",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/kaggle/input/data-csvs/CSVs/After/chin-augmentation-implants-4_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/scar-revision-scar-repair-3_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/Ear-surgery-otoplasty-54_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/silikon-16_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/radiance-injections-10_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/face-lift-surgery-rhytidectomy_97_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/photofacials-3_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/permanent-cosmetics-6_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/Eyelid_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/rhinoplasty-nose-job-nose-surgery-31_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/laser-skin-resurfacing-49_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/cheek-augmentation-implants-7_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/After/radiessesuptmsup-injections_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/rhinoplasty-nose-job-nose-surgery-31_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/Eyelid_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/silikon-16_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/scar-revision-scar-repair-3_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/photofacials-3_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/laser-skin-resurfacing-49_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/permanent-cosmetics-6_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/radiessesuptmsup-injections_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/radiance-injections-10_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/cheek-augmentation-implants-7_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/Ear-surgery-otoplasty-54_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/face-lift-surgery-rhytidectomy_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/Before/chin-augmentation-implants-4_before_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/chin-augmentation-implants-4_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/scar-revision-scar-repair-3_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/Ear-surgery-otoplasty-54_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/silikon-16_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/radiance-injections-10_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/face-lift-surgery-rhytidectomy_97_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/photofacials-3_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/permanent-cosmetics-6_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/Eyelid_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/rhinoplasty-nose-job-nose-surgery-31_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/laser-skin-resurfacing-49_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/cheek-augmentation-implants-7_after_images.csv\n",
+      "/kaggle/input/data-csvs/CSVs/BACKUP/radiessesuptmsup-injections_after_images.csv\n"
+     ]
+    }
+   ],
+   "source": [
+    "# This Python 3 environment comes with many helpful analytics libraries installed\n",
+    "# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python\n",
+    "# For example, here's several helpful packages to load\n",
+    "\n",
+    "import numpy as np # linear algebra\n",
+    "import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)\n",
+    "\n",
+    "# Input data files are available in the read-only \"../input/\" directory\n",
+    "# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory\n",
+    "\n",
+    "import os\n",
+    "for dirname, _, filenames in os.walk('/kaggle/input'):\n",
+    "    for filename in filenames:\n",
+    "        print(os.path.join(dirname, filename))\n",
+    "\n",
+    "# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using \"Save & Run All\" \n",
+    "# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "1d7f3630",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:46:46.829501Z",
+     "iopub.status.busy": "2025-02-16T13:46:46.829127Z",
+     "iopub.status.idle": "2025-02-16T13:46:51.348974Z",
+     "shell.execute_reply": "2025-02-16T13:46:51.348145Z"
+    },
+    "papermill": {
+     "duration": 4.524364,
+     "end_time": "2025-02-16T13:46:51.350420",
+     "exception": false,
+     "start_time": "2025-02-16T13:46:46.826056",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(91, 64975)"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "before_csv = \"/kaggle/input/data-csvs/CSVs/Before/Eyelid_before_images.csv\"\n",
+    "\n",
+    "df = pd.read_csv(before_csv)\n",
+    "\n",
+    "df.dropna(inplace=True)\n",
+    "df.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "3a075c8a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:46:51.356987Z",
+     "iopub.status.busy": "2025-02-16T13:46:51.356740Z",
+     "iopub.status.idle": "2025-02-16T13:46:51.384308Z",
+     "shell.execute_reply": "2025-02-16T13:46:51.383543Z"
+    },
+    "papermill": {
+     "duration": 0.032753,
+     "end_time": "2025-02-16T13:46:51.385986",
+     "exception": false,
+     "start_time": "2025-02-16T13:46:51.353233",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Image_Name</th>\n",
+       "      <th>0</th>\n",
+       "      <th>1</th>\n",
+       "      <th>2</th>\n",
+       "      <th>3</th>\n",
+       "      <th>4</th>\n",
+       "      <th>5</th>\n",
+       "      <th>6</th>\n",
+       "      <th>7</th>\n",
+       "      <th>8</th>\n",
+       "      <th>...</th>\n",
+       "      <th>64964</th>\n",
+       "      <th>64965</th>\n",
+       "      <th>64966</th>\n",
+       "      <th>64967</th>\n",
+       "      <th>64968</th>\n",
+       "      <th>64969</th>\n",
+       "      <th>64970</th>\n",
+       "      <th>64971</th>\n",
+       "      <th>64972</th>\n",
+       "      <th>64973</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>45.jpg</td>\n",
+       "      <td>139</td>\n",
+       "      <td>139</td>\n",
+       "      <td>139</td>\n",
+       "      <td>140</td>\n",
+       "      <td>140</td>\n",
+       "      <td>141</td>\n",
+       "      <td>141</td>\n",
+       "      <td>141</td>\n",
+       "      <td>142</td>\n",
+       "      <td>...</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>22.0</td>\n",
+       "      <td>23.0</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>20.0</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>56.jpg</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>133</td>\n",
+       "      <td>132</td>\n",
+       "      <td>...</td>\n",
+       "      <td>129.0</td>\n",
+       "      <td>129.0</td>\n",
+       "      <td>128.0</td>\n",
+       "      <td>127.0</td>\n",
+       "      <td>125.0</td>\n",
+       "      <td>126.0</td>\n",
+       "      <td>126.0</td>\n",
+       "      <td>127.0</td>\n",
+       "      <td>127.0</td>\n",
+       "      <td>126.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>89.jpg</td>\n",
+       "      <td>153</td>\n",
+       "      <td>158</td>\n",
+       "      <td>157</td>\n",
+       "      <td>152</td>\n",
+       "      <td>157</td>\n",
+       "      <td>167</td>\n",
+       "      <td>169</td>\n",
+       "      <td>162</td>\n",
+       "      <td>157</td>\n",
+       "      <td>...</td>\n",
+       "      <td>107.0</td>\n",
+       "      <td>105.0</td>\n",
+       "      <td>102.0</td>\n",
+       "      <td>99.0</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>91.0</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>88.0</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>119.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>20.jpg</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>107</td>\n",
+       "      <td>109</td>\n",
+       "      <td>...</td>\n",
+       "      <td>204.0</td>\n",
+       "      <td>202.0</td>\n",
+       "      <td>201.0</td>\n",
+       "      <td>201.0</td>\n",
+       "      <td>198.0</td>\n",
+       "      <td>197.0</td>\n",
+       "      <td>196.0</td>\n",
+       "      <td>195.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>193.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>58.jpg</td>\n",
+       "      <td>34</td>\n",
+       "      <td>26</td>\n",
+       "      <td>21</td>\n",
+       "      <td>22</td>\n",
+       "      <td>21</td>\n",
+       "      <td>16</td>\n",
+       "      <td>15</td>\n",
+       "      <td>18</td>\n",
+       "      <td>34</td>\n",
+       "      <td>...</td>\n",
+       "      <td>82.0</td>\n",
+       "      <td>75.0</td>\n",
+       "      <td>74.0</td>\n",
+       "      <td>79.0</td>\n",
+       "      <td>86.0</td>\n",
+       "      <td>86.0</td>\n",
+       "      <td>79.0</td>\n",
+       "      <td>61.0</td>\n",
+       "      <td>38.0</td>\n",
+       "      <td>23.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>6.jpg</td>\n",
+       "      <td>117</td>\n",
+       "      <td>190</td>\n",
+       "      <td>193</td>\n",
+       "      <td>194</td>\n",
+       "      <td>192</td>\n",
+       "      <td>197</td>\n",
+       "      <td>189</td>\n",
+       "      <td>194</td>\n",
+       "      <td>192</td>\n",
+       "      <td>...</td>\n",
+       "      <td>187.0</td>\n",
+       "      <td>187.0</td>\n",
+       "      <td>187.0</td>\n",
+       "      <td>188.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>185.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>76.jpg</td>\n",
+       "      <td>76</td>\n",
+       "      <td>75</td>\n",
+       "      <td>75</td>\n",
+       "      <td>74</td>\n",
+       "      <td>74</td>\n",
+       "      <td>75</td>\n",
+       "      <td>75</td>\n",
+       "      <td>76</td>\n",
+       "      <td>74</td>\n",
+       "      <td>...</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>101.0</td>\n",
+       "      <td>132.0</td>\n",
+       "      <td>140.0</td>\n",
+       "      <td>134.0</td>\n",
+       "      <td>162.0</td>\n",
+       "      <td>126.0</td>\n",
+       "      <td>146.0</td>\n",
+       "      <td>164.0</td>\n",
+       "      <td>128.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>5.jpg</td>\n",
+       "      <td>59</td>\n",
+       "      <td>60</td>\n",
+       "      <td>61</td>\n",
+       "      <td>61</td>\n",
+       "      <td>62</td>\n",
+       "      <td>63</td>\n",
+       "      <td>64</td>\n",
+       "      <td>64</td>\n",
+       "      <td>64</td>\n",
+       "      <td>...</td>\n",
+       "      <td>199.0</td>\n",
+       "      <td>198.0</td>\n",
+       "      <td>196.0</td>\n",
+       "      <td>195.0</td>\n",
+       "      <td>193.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>192.0</td>\n",
+       "      <td>190.0</td>\n",
+       "      <td>188.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>8.jpg</td>\n",
+       "      <td>206</td>\n",
+       "      <td>212</td>\n",
+       "      <td>218</td>\n",
+       "      <td>216</td>\n",
+       "      <td>210</td>\n",
+       "      <td>207</td>\n",
+       "      <td>211</td>\n",
+       "      <td>217</td>\n",
+       "      <td>199</td>\n",
+       "      <td>...</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>28.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>29.0</td>\n",
+       "      <td>30.0</td>\n",
+       "      <td>30.0</td>\n",
+       "      <td>31.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>84.jpg</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>178</td>\n",
+       "      <td>179</td>\n",
+       "      <td>...</td>\n",
+       "      <td>21.0</td>\n",
+       "      <td>18.0</td>\n",
+       "      <td>15.0</td>\n",
+       "      <td>24.0</td>\n",
+       "      <td>15.0</td>\n",
+       "      <td>14.0</td>\n",
+       "      <td>16.0</td>\n",
+       "      <td>21.0</td>\n",
+       "      <td>21.0</td>\n",
+       "      <td>17.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>10 rows × 64975 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   Image_Name    0    1    2    3    4    5    6    7    8  ...  64964  64965  \\\n",
+       "0      45.jpg  139  139  139  140  140  141  141  141  142  ...   19.0   20.0   \n",
+       "1      56.jpg  133  133  133  133  133  133  133  133  132  ...  129.0  129.0   \n",
+       "2      89.jpg  153  158  157  152  157  167  169  162  157  ...  107.0  105.0   \n",
+       "3      20.jpg  107  107  107  107  107  107  107  107  109  ...  204.0  202.0   \n",
+       "4      58.jpg   34   26   21   22   21   16   15   18   34  ...   82.0   75.0   \n",
+       "5       6.jpg  117  190  193  194  192  197  189  194  192  ...  187.0  187.0   \n",
+       "6      76.jpg   76   75   75   74   74   75   75   76   74  ...   90.0  101.0   \n",
+       "8       5.jpg   59   60   61   61   62   63   64   64   64  ...  199.0  198.0   \n",
+       "9       8.jpg  206  212  218  216  210  207  211  217  199  ...   29.0   28.0   \n",
+       "10     84.jpg  178  178  178  178  178  178  178  178  179  ...   21.0   18.0   \n",
+       "\n",
+       "    64966  64967  64968  64969  64970  64971  64972  64973  \n",
+       "0    22.0   23.0   20.0   20.0   20.0   19.0   19.0   18.0  \n",
+       "1   128.0  127.0  125.0  126.0  126.0  127.0  127.0  126.0  \n",
+       "2   102.0   99.0   95.0   91.0   97.0   88.0   97.0  119.0  \n",
+       "3   201.0  201.0  198.0  197.0  196.0  195.0  194.0  193.0  \n",
+       "4    74.0   79.0   86.0   86.0   79.0   61.0   38.0   23.0  \n",
+       "5   187.0  188.0  185.0  185.0  185.0  185.0  185.0  185.0  \n",
+       "6   132.0  140.0  134.0  162.0  126.0  146.0  164.0  128.0  \n",
+       "8   196.0  195.0  193.0  194.0  194.0  192.0  190.0  188.0  \n",
+       "9    29.0   29.0   29.0   29.0   29.0   30.0   30.0   31.0  \n",
+       "10   15.0   24.0   15.0   14.0   16.0   21.0   21.0   17.0  \n",
+       "\n",
+       "[10 rows x 64975 columns]"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.head(10)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "389dad0f",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00248,
+     "end_time": "2025-02-16T13:46:51.391413",
+     "exception": false,
+     "start_time": "2025-02-16T13:46:51.388933",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#  **EYELID_SURGERY**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "0e8a69b8",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:46:51.399322Z",
+     "iopub.status.busy": "2025-02-16T13:46:51.399032Z",
+     "iopub.status.idle": "2025-02-16T13:47:03.073801Z",
+     "shell.execute_reply": "2025-02-16T13:47:03.072698Z"
+    },
+    "papermill": {
+     "duration": 11.682797,
+     "end_time": "2025-02-16T13:47:03.077507",
+     "exception": false,
+     "start_time": "2025-02-16T13:46:51.394710",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'\\'\\'\\n# Train SVM classifier\\nsvm = SVC(kernel=\"linear\", random_state=42)\\nsvm.fit(X_train_pca, y_train)\\n\\n# Make predictions\\ny_pred = svm.predict(X_test_pca)\\n\\n# Evaluate the model\\naccuracy = accuracy_score(y_test, y_pred)\\nprint(f\"Accuracy: {accuracy * 100:.2f}%\")\\nprint(\"\\nClassification Report:\")\\nprint(classification_report(y_test, y_pred))\\n'"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "from sklearn.decomposition import PCA\n",
+    "from sklearn.svm import SVC\n",
+    "from sklearn.metrics import accuracy_score, classification_report\n",
+    "\n",
+    "# Load CSV files\n",
+    "after_csv = \"/kaggle/input/data-csvs/CSVs/After/Eyelid_after_images.csv\"\n",
+    "before_csv = \"/kaggle/input/data-csvs/CSVs/Before/Eyelid_before_images.csv\"\n",
+    "\n",
+    "\n",
+    "before_data = pd.read_csv(before_csv)\n",
+    "after_data = pd.read_csv(after_csv)\n",
+    "\n",
+    "\n",
+    "# Removing NAN\n",
+    "before_data.dropna(inplace = True)\n",
+    "after_data.dropna(inplace = True)\n",
+    "\n",
+    "# Assign labels (0 for before , 1 for after)\n",
+    "before_data[\"Label\"] = 0\n",
+    "after_data[\"Label\"] = 1\n",
+    "\n",
+    "# Combine data\n",
+    "data = pd.concat([before_data, after_data], ignore_index=True)\n",
+    "\n",
+    "# Separate features and labels\n",
+    "X = data.drop(columns=[\"Image_Name\", \"Label\"]).values  # Pixel values\n",
+    "y = data[\"Label\"].values  # Labels\n",
+    "\n",
+    "# Normalize the pixel data\n",
+    "scaler = StandardScaler()\n",
+    "X_scaled = scaler.fit_transform(X)\n",
+    "\n",
+    "# Split into training and testing datasets\n",
+    "X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)\n",
+    "\n",
+    "\n",
+    "# Apply PCA for dimensionality reduction\n",
+    "pca = PCA(n_components=50)  # Adjust components as needed\n",
+    "X_train_pca = pca.fit_transform(X_train)\n",
+    "X_test_pca = pca.transform(X_test)\n",
+    "\n",
+    "'''''\n",
+    "# Train SVM classifier\n",
+    "svm = SVC(kernel=\"linear\", random_state=42)\n",
+    "svm.fit(X_train_pca, y_train)\n",
+    "\n",
+    "# Make predictions\n",
+    "y_pred = svm.predict(X_test_pca)\n",
+    "\n",
+    "# Evaluate the model\n",
+    "accuracy = accuracy_score(y_test, y_pred)\n",
+    "print(f\"Accuracy: {accuracy * 100:.2f}%\")\n",
+    "print(\"\\nClassification Report:\")\n",
+    "print(classification_report(y_test, y_pred))\n",
+    "'''''"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "7afb9d80",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:47:03.088355Z",
+     "iopub.status.busy": "2025-02-16T13:47:03.087817Z",
+     "iopub.status.idle": "2025-02-16T13:47:12.484189Z",
+     "shell.execute_reply": "2025-02-16T13:47:12.483229Z"
+    },
+    "papermill": {
+     "duration": 9.403873,
+     "end_time": "2025-02-16T13:47:12.485921",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:03.082048",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Accuracy: 51.35%\n",
+      "\n",
+      "Classification Report:\n",
+      "              precision    recall  f1-score   support\n",
+      "\n",
+      "           0       0.53      0.47      0.50        19\n",
+      "           1       0.50      0.56      0.53        18\n",
+      "\n",
+      "    accuracy                           0.51        37\n",
+      "   macro avg       0.51      0.51      0.51        37\n",
+      "weighted avg       0.52      0.51      0.51        37\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Train SVM classifier\n",
+    "svm = SVC(kernel=\"linear\", random_state=42)\n",
+    "svm.fit(X_train_pca , y_train)\n",
+    "\n",
+    "# Make predictions\n",
+    "y_pred = svm.predict(X_test_pca)\n",
+    "\n",
+    "# Evaluate the model\n",
+    "accuracy = accuracy_score(y_test, y_pred)\n",
+    "print(f\"Accuracy: {accuracy * 100:.2f}%\")\n",
+    "print(\"\\nClassification Report:\")\n",
+    "print(classification_report(y_test, y_pred))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "81174608",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003386,
+     "end_time": "2025-02-16T13:47:12.492457",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:12.489071",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Ear Surgery"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "810526b2",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:47:12.498970Z",
+     "iopub.status.busy": "2025-02-16T13:47:12.498693Z",
+     "iopub.status.idle": "2025-02-16T13:47:19.641125Z",
+     "shell.execute_reply": "2025-02-16T13:47:19.640215Z"
+    },
+    "papermill": {
+     "duration": 7.147882,
+     "end_time": "2025-02-16T13:47:19.642980",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:12.495098",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'\\'\\'\\n# Train SVM classifier\\nsvm = SVC(kernel=\"linear\", random_state=42)\\nsvm.fit(X_train_pca, y_train)\\n\\n# Make predictions\\ny_pred = svm.predict(X_test_pca)\\n\\n# Evaluate the model\\naccuracy = accuracy_score(y_test, y_pred)\\nprint(f\"Accuracy: {accuracy * 100:.2f}%\")\\nprint(\"\\nClassification Report:\")\\nprint(classification_report(y_test, y_pred))\\n'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "from sklearn.decomposition import PCA\n",
+    "from sklearn.svm import SVC\n",
+    "from sklearn.metrics import accuracy_score, classification_report\n",
+    "\n",
+    "# Load CSV files\n",
+    "after_csv = \"/kaggle/input/data-csvs/CSVs/After/Ear-surgery-otoplasty-54_after_images.csv\"\n",
+    "before_csv = \"/kaggle/input/data-csvs/CSVs/Before/Ear-surgery-otoplasty-54_before_images.csv\"\n",
+    "\n",
+    "\n",
+    "before_data = pd.read_csv(before_csv)\n",
+    "after_data = pd.read_csv(after_csv)\n",
+    "\n",
+    "\n",
+    "# Removing NAN\n",
+    "before_data.dropna(inplace = True)\n",
+    "after_data.dropna(inplace = True)\n",
+    "\n",
+    "# Assign labels (0 for before , 1 for after)\n",
+    "before_data[\"Label\"] = 0\n",
+    "after_data[\"Label\"] = 1\n",
+    "\n",
+    "# Combine data\n",
+    "data = pd.concat([before_data, after_data], ignore_index=True)\n",
+    "\n",
+    "# Separate features and labels\n",
+    "X = data.drop(columns=[\"Image_Name\", \"Label\"]).values  # Pixel values\n",
+    "y = data[\"Label\"].values  # Labels\n",
+    "\n",
+    "# Normalize the pixel data\n",
+    "scaler = StandardScaler()\n",
+    "X_scaled = scaler.fit_transform(X)\n",
+    "\n",
+    "# Split into training and testing datasets\n",
+    "X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)\n",
+    "\n",
+    "\n",
+    "# Apply PCA for dimensionality reduction\n",
+    "pca = PCA(n_components=50)  # Adjust components as needed\n",
+    "X_train_pca = pca.fit_transform(X_train)\n",
+    "X_test_pca = pca.transform(X_test)\n",
+    "'''''\n",
+    "# Train SVM classifier\n",
+    "svm = SVC(kernel=\"linear\", random_state=42)\n",
+    "svm.fit(X_train_pca, y_train)\n",
+    "\n",
+    "# Make predictions\n",
+    "y_pred = svm.predict(X_test_pca)\n",
+    "\n",
+    "# Evaluate the model\n",
+    "accuracy = accuracy_score(y_test, y_pred)\n",
+    "print(f\"Accuracy: {accuracy * 100:.2f}%\")\n",
+    "print(\"\\nClassification Report:\")\n",
+    "print(classification_report(y_test, y_pred))\n",
+    "'''''"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "752b9565",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-02-16T13:47:19.664266Z",
+     "iopub.status.busy": "2025-02-16T13:47:19.663953Z",
+     "iopub.status.idle": "2025-02-16T13:47:19.958468Z",
+     "shell.execute_reply": "2025-02-16T13:47:19.957405Z"
+    },
+    "papermill": {
+     "duration": 0.305615,
+     "end_time": "2025-02-16T13:47:19.959842",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.654227",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Accuracy: 52.38%\n",
+      "\n",
+      "Classification Report:\n",
+      "              precision    recall  f1-score   support\n",
+      "\n",
+      "           0       0.55      0.55      0.55        11\n",
+      "           1       0.50      0.50      0.50        10\n",
+      "\n",
+      "    accuracy                           0.52        21\n",
+      "   macro avg       0.52      0.52      0.52        21\n",
+      "weighted avg       0.52      0.52      0.52        21\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Train SVM classifier\n",
+    "svm = SVC(kernel=\"linear\", random_state=42)\n",
+    "svm.fit(X_train_pca, y_train)\n",
+    "\n",
+    "# Make predictions\n",
+    "y_pred = svm.predict(X_test_pca)\n",
+    "\n",
+    "# Evaluate the model\n",
+    "accuracy = accuracy_score(y_test, y_pred)\n",
+    "print(f\"Accuracy: {accuracy * 100:.2f}%\")\n",
+    "print(\"\\nClassification Report:\")\n",
+    "print(classification_report(y_test, y_pred))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "be0bf86e",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002526,
+     "end_time": "2025-02-16T13:47:19.965298",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.962772",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ebef5240",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002575,
+     "end_time": "2025-02-16T13:47:19.970532",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.967957",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5606478e",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002515,
+     "end_time": "2025-02-16T13:47:19.975674",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.973159",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "345be16b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002588,
+     "end_time": "2025-02-16T13:47:19.980873",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.978285",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "385e7242",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002639,
+     "end_time": "2025-02-16T13:47:19.986192",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.983553",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3b4640a3",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002664,
+     "end_time": "2025-02-16T13:47:19.991540",
+     "exception": false,
+     "start_time": "2025-02-16T13:47:19.988876",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "datasetId": 6267582,
+     "sourceId": 10152110,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "dockerImageVersionId": 30805,
+   "isGpuEnabled": false,
+   "isInternetEnabled": true,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.14"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 36.795579,
+   "end_time": "2025-02-16T13:47:20.513625",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2025-02-16T13:46:43.718046",
+   "version": "2.6.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
